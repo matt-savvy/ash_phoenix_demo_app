@@ -18,6 +18,13 @@ defmodule MyAppWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/locations", LocationLive.Index, :index
+    live "/locations/new", LocationLive.Index, :new
+    live "/locations/:id/edit", LocationLive.Index, :edit
+
+    live "/locations/:id", LocationLive.Show, :show
+    live "/locations/:id/show/edit", LocationLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
