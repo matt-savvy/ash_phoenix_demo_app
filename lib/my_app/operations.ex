@@ -5,5 +5,6 @@ defmodule MyApp.Operations do
   resources do
     resource MyApp.Operations.Business
     resource MyApp.Operations.Location
+    resource MyApp.Operations.Service
   end
 end
