@@ -45,7 +45,8 @@ config :spark,
 
 config :my_app,
   ecto_repos: [MyApp.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  ash_domains: [MyApp.Operations]
 
 # Configures the endpoint
 config :my_app, MyAppWeb.Endpoint,
