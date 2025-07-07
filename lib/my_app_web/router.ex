@@ -25,6 +25,13 @@ defmodule MyAppWeb.Router do
 
     live "/locations/:id", LocationLive.Show, :show
     live "/locations/:id/show/edit", LocationLive.Show, :edit
+
+    live "/services", ServiceLive.Index, :index
+    live "/services/new", ServiceLive.Index, :new
+    live "/services/:id/edit", ServiceLive.Index, :edit
+
+    live "/services/:id", ServiceLive.Show, :show
+    live "/services/:id/show/edit", ServiceLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
