@@ -7,7 +7,30 @@ defmodule MyApp.Operations.Service do
   end
 
   actions do
-    defaults [:read, :destroy, create: [], update: []]
+    defaults [:read, :destroy]
+
+    create :create do
+      accept [:name]
+      primary? true
+      argument :locations, {:array, :integer}, allow_nil?: true
+
+      change manage_relationship(:locations, :location_relationships,
+               value_is_key: :location_id,
+               type: :direct_control
+             )
+    end
+
+    update :update do
+      accept [:name]
+      primary? true
+      argument :locations, {:array, :integer}, allow_nil?: true
+      require_atomic? false
+
+      change manage_relationship(:locations, :location_relationships,
+               value_is_key: :location_id,
+               type: :direct_control
+             )
+    end
   end
 
   attributes do
@@ -15,6 +38,18 @@ defmodule MyApp.Operations.Service do
 
     attribute :name, :string do
       allow_nil? false
+    end
+  end
+
+  relationships do
+    has_many :location_relationships, MyApp.Operations.ServiceLocation do
+      destination_attribute :service_id
+    end
+
+    many_to_many :locations, MyApp.Operations.Location do
+      join_relationship :location_relationships
+      source_attribute_on_join_resource :service_id
+      destination_attribute_on_join_resource :location_id
     end
   end
 end
