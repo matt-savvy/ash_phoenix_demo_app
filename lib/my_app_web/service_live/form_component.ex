@@ -19,10 +19,11 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
       >
         <.input
           field={@form[:locations]}
+          value={locations_value(@form)}
           type="select"
           multiple
           label="Locations"
-          options={[{"1", 1}, {"2", 2}]}
+          options={Enum.map(@locations, &{&1.name, &1.id})}
         />
         <.input field={@form[:name]} type="text" label="Name" />
 
@@ -39,7 +40,30 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign_locations()
      |> assign_form()}
+  end
+
+  defp assign_locations(socket) do
+    locations =
+      MyApp.Operations.Location
+      |> Ash.read!()
+
+    socket
+    |> assign(:locations, locations)
+  end
+
+  defp locations_value(form) do
+    case Ash.Changeset.fetch_argument(form.source.source, :locations) do
+      {:ok, location_ids} ->
+        location_ids
+
+      :error ->
+        case form.source.source.data.locations do
+          %Ash.NotLoaded{} -> []
+          locations -> Enum.map(locations, & &1.id)
+        end
+    end
   end
 
   @impl true

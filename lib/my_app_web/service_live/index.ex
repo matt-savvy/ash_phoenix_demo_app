@@ -58,7 +58,7 @@ defmodule MyAppWeb.ServiceLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :services, Ash.read!(MyApp.Operations.Service))}
+    {:ok, stream(socket, :services, Ash.read!(MyApp.Operations.Service, load: [:locations]))}
   end
 
   @impl true
@@ -69,7 +69,7 @@ defmodule MyAppWeb.ServiceLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Service")
-    |> assign(:service, Ash.get!(MyApp.Operations.Service, id))
+    |> assign(:service, Ash.get!(MyApp.Operations.Service, id, load: [:locations]))
   end
 
   defp apply_action(socket, :new, _params) do
