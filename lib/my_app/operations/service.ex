@@ -48,6 +48,7 @@ defmodule MyApp.Operations.Service do
   end
 
   aggregates do
+    list :location_names, :locations, :name
     list :location_ids, :locations, :id
   end
 end

@@ -17,6 +17,8 @@ defmodule MyAppWeb.ServiceLive.Show do
 
     <.list>
       <:item title="Id">{@service.id}</:item>
+      <:item title="Id">{@service.name}</:item>
+      <:item title="Locations">{@service.location_names |> Enum.join(", ")}</:item>
     </.list>
 
     <.back navigate={~p"/services"}>Back to services</.back>
@@ -49,7 +51,7 @@ defmodule MyAppWeb.ServiceLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:service, Ash.get!(MyApp.Operations.Service, id))}
+     |> assign(:service, Ash.get!(MyApp.Operations.Service, id, load: [:location_names]))}
   end
 
   defp page_title(:show), do: "Show Service"

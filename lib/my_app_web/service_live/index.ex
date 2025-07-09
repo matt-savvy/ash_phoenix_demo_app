@@ -18,7 +18,8 @@ defmodule MyAppWeb.ServiceLive.Index do
       rows={@streams.services}
       row_click={fn {_id, service} -> JS.navigate(~p"/services/#{service}") end}
     >
-      <:col :let={{_id, service}} label="Id">{service.id}</:col>
+      <:col :let={{_id, service}} label="Id">{service.name}</:col>
+      <:col :let={{_id, service}} label="Locations">{service.location_names |> Enum.join(", ")}</:col>
 
       <:action :let={{_id, service}}>
         <div class="sr-only">
@@ -58,7 +59,12 @@ defmodule MyAppWeb.ServiceLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :services, Ash.read!(MyApp.Operations.Service, load: [:locations]))}
+    {:ok,
+     stream(
+       socket,
+       :services,
+       Ash.read!(MyApp.Operations.Service, load: [:locations, :location_names])
+     )}
   end
 
   @impl true
