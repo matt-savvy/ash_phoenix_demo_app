@@ -275,7 +275,7 @@ defmodule MyAppWeb.CoreComponents do
 
   attr :type, :string,
     default: "text",
-    values: ~w(checkbox color date datetime-local email file month number password
+    values: ~w(checkbox checkgroup color date datetime-local email file month number password
                range search select tel text textarea time url week)
 
   attr :field, Phoenix.HTML.FormField,
@@ -300,6 +300,34 @@ defmodule MyAppWeb.CoreComponents do
     |> assign_new(:name, fn -> if assigns.multiple, do: field.name <> "[]", else: field.name end)
     |> assign_new(:value, fn -> field.value end)
     |> input()
+  end
+
+  def input(%{type: "checkgroup"} = assigns) do
+    # from https://fly.io/phoenix-files/making-a-checkboxgroup-input/
+    ~H"""
+    <div phx-feedback-for={@name} class="text-sm">
+      <.label for={@id}>{@label}</.label>
+      <div class="mt-1 w-full bg-white border border-gray-300 ...">
+        <div class="grid grid-cols-1 gap-1 text-sm items-baseline">
+          <div :for={{label, value} <- @options}>
+            <label for={"#{@name}-#{value}"}>
+              <input
+                type="checkbox"
+                id={"#{@name}-#{value}"}
+                name={@name}
+                value={value}
+                checked={value in @value}
+                class="mr-2 h-4 w-4 rounded"
+                {@rest}
+              />
+              {label}
+            </label>
+          </div>
+        </div>
+      </div>
+      <.error :for={msg <- @errors}>{msg}</.error>
+    </div>
+    """
   end
 
   def input(%{type: "checkbox"} = assigns) do
