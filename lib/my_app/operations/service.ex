@@ -46,4 +46,8 @@ defmodule MyApp.Operations.Service do
       destination_attribute_on_join_resource :location_id
     end
   end
+
+  aggregates do
+    list :location_ids, :locations, :id
+  end
 end

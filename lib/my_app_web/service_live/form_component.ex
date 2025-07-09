@@ -95,7 +95,7 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
     form =
       if service do
         service
-        |> Ash.load!([:locations])
+        |> Ash.load!([:locations, :location_ids])
         |> AshPhoenix.Form.for_update(:update, as: "service")
       else
         AshPhoenix.Form.for_create(MyApp.Operations.Service, :create, as: "service")

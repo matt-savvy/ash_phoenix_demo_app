@@ -16,8 +16,9 @@ defmodule MyApp.OperationsTest do
       assert Ash.Query.filter(ServiceLocation, service_id == ^service_1.id) |> Ash.count!() == 2
 
       assert %Service{
-               locations: [%Location{id: ^location_1_id}, %Location{id: location_2_id}]
-             } = Ash.load!(service_1, [:locations])
+               locations: [%Location{id: ^location_1_id}, %Location{id: location_2_id}],
+               location_ids: [^location_1_id, ^location_2_id]
+             } = Ash.load!(service_1, [:locations, :location_ids])
 
       service_2 = Ash.create!(Service, %{name: "Overhaul", locations: [location_3_id]})
 
