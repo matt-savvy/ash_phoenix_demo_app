@@ -14,10 +14,7 @@ defmodule MyApp.Operations.Service do
       primary? true
       argument :locations, {:array, :integer}, allow_nil?: true
 
-      change manage_relationship(:locations, :location_relationships,
-               value_is_key: :location_id,
-               type: :direct_control
-             )
+      change manage_relationship(:locations, type: :append_and_remove)
     end
 
     update :update do
@@ -26,10 +23,7 @@ defmodule MyApp.Operations.Service do
       argument :locations, {:array, :integer}, allow_nil?: true
       require_atomic? false
 
-      change manage_relationship(:locations, :location_relationships,
-               value_is_key: :location_id,
-               type: :direct_control
-             )
+      change manage_relationship(:locations, type: :append_and_remove)
     end
   end
 
