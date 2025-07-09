@@ -17,6 +17,7 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <input type="hidden" name={@form[:location_ids].name} value="" />
         <.input
           field={@form[:location_ids]}
           type="select"
@@ -52,14 +53,25 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
     |> assign(:locations, locations)
   end
 
+  defp preprocess_service_params(%{"location_ids" => ""} = params) do
+    Map.put(params, "location_ids", [])
+  end
+
+  defp preprocess_service_params(params), do: params
+
   @impl true
   def handle_event("validate", %{"service" => service_params}, socket) do
     {:noreply,
-     assign(socket, form: AshPhoenix.Form.validate(socket.assigns.form, service_params))}
+     assign(socket,
+       form:
+         AshPhoenix.Form.validate(socket.assigns.form, preprocess_service_params(service_params))
+     )}
   end
 
   def handle_event("save", %{"service" => service_params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.form, params: service_params) do
+    case AshPhoenix.Form.submit(socket.assigns.form,
+           params: preprocess_service_params(service_params)
+         ) do
       {:ok, service} ->
         notify_parent({:saved, service})
 
