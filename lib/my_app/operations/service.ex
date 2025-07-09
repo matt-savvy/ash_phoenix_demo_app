@@ -12,18 +12,18 @@ defmodule MyApp.Operations.Service do
     create :create do
       accept [:name]
       primary? true
-      argument :locations, {:array, :integer}, allow_nil?: true
+      argument :location_ids, {:array, :integer}, allow_nil?: true
 
-      change manage_relationship(:locations, type: :append_and_remove)
+      change manage_relationship(:location_ids, :locations, type: :append_and_remove)
     end
 
     update :update do
       accept [:name]
       primary? true
-      argument :locations, {:array, :integer}, allow_nil?: true
+      argument :location_ids, {:array, :integer}, allow_nil?: true
       require_atomic? false
 
-      change manage_relationship(:locations, type: :append_and_remove)
+      change manage_relationship(:location_ids, :locations, type: :append_and_remove)
     end
   end
 

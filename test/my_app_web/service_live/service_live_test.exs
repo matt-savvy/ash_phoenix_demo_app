@@ -25,7 +25,7 @@ defmodule MyAppWeb.ServiceLive.IndexTest do
 
     assert html =~ "New Service"
 
-    attrs = %{name: "Overhaul", locations: [location_1_id, location_2_id]}
+    attrs = %{name: "Overhaul", location_ids: [location_1_id, location_2_id]}
 
     assert new_service_view
            |> form("#service-form", service: attrs)
@@ -47,22 +47,22 @@ defmodule MyAppWeb.ServiceLive.IndexTest do
 
     %Service{} =
       service =
-      Ash.create!(Service, %{name: "Overhaul", locations: [location_1_id, location_2_id]})
+      Ash.create!(Service, %{name: "Overhaul", location_ids: [location_1_id, location_2_id]})
 
     {:ok, edit_service_view, html} = live(conn, "/services/#{service.id}/edit")
 
     assert html =~ "Edit Service"
 
-    attrs = %{locations: [location_2_id, location_3_id]}
-
     select =
       edit_service_view
-      |> element("#service_locations")
+      |> element("#service_location_ids")
       |> render
 
     assert select =~ "<option selected=\"selected\" value=\"#{location_1_id}\">"
     assert select =~ "<option selected=\"selected\" value=\"#{location_2_id}\">"
     assert select =~ "<option value=\"#{location_3_id}\""
+
+    attrs = %{location_ids: [location_2_id, location_3_id]}
 
     assert edit_service_view
            |> form("#service-form", service: attrs)

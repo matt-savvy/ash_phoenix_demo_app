@@ -18,8 +18,7 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
         phx-submit="save"
       >
         <.input
-          field={@form[:locations]}
-          value={locations_value(@form)}
+          field={@form[:location_ids]}
           type="select"
           multiple
           label="Locations"
@@ -51,19 +50,6 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
 
     socket
     |> assign(:locations, locations)
-  end
-
-  defp locations_value(form) do
-    case Ash.Changeset.fetch_argument(form.source.source, :locations) do
-      {:ok, location_ids} ->
-        location_ids
-
-      :error ->
-        case form.source.source.data.locations do
-          %Ash.NotLoaded{} -> []
-          locations -> Enum.map(locations, & &1.id)
-        end
-    end
   end
 
   @impl true

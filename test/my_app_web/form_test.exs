@@ -15,7 +15,7 @@ defmodule MyAppWeb.Operations.FormTest do
         |> AshPhoenix.Form.for_create(:create)
         |> Phoenix.Component.to_form()
 
-      create_attrs = %{"name" => "Tuneup", "locations" => [location_1_id, location_2_id]}
+      create_attrs = %{"name" => "Tuneup", "location_ids" => [location_1_id, location_2_id]}
 
       assert %Phoenix.HTML.Form{
                source: %AshPhoenix.Form{
@@ -45,7 +45,7 @@ defmodule MyAppWeb.Operations.FormTest do
       %Ash.Changeset{data: data} = phx_form.source.source
       assert [%Location{id: ^location_1_id}, %Location{id: ^location_2_id}] = data.locations
 
-      update_attrs = %{"name" => "Tuneup", "locations" => [location_3_id]}
+      update_attrs = %{"name" => "Tuneup", "location_ids" => [location_3_id]}
 
       assert {:ok, %Service{} = service} =
                AshPhoenix.Form.submit(phx_form, params: update_attrs)

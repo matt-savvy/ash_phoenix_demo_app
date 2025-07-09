@@ -11,7 +11,7 @@ defmodule MyApp.OperationsTest do
       %{id: location_3_id} = Ash.create!(Location, %{name: "Northeast Station"})
 
       service_1 =
-        Ash.create!(Service, %{name: "Tuneup", locations: [location_1_id, location_2_id]})
+        Ash.create!(Service, %{name: "Tuneup", location_ids: [location_1_id, location_2_id]})
 
       assert Ash.Query.filter(ServiceLocation, service_id == ^service_1.id) |> Ash.count!() == 2
 
@@ -20,11 +20,11 @@ defmodule MyApp.OperationsTest do
                location_ids: [^location_1_id, ^location_2_id]
              } = Ash.load!(service_1, [:locations, :location_ids])
 
-      service_2 = Ash.create!(Service, %{name: "Overhaul", locations: [location_3_id]})
+      service_2 = Ash.create!(Service, %{name: "Overhaul", location_ids: [location_3_id]})
 
       assert Ash.Query.filter(ServiceLocation, service_id == ^service_2.id) |> Ash.count!() == 1
 
-      Ash.update!(service_2, %{locations: [location_2_id]})
+      Ash.update!(service_2, %{location_ids: [location_2_id]})
 
       assert %Service{
                locations: [%Location{id: location_2_id}]
