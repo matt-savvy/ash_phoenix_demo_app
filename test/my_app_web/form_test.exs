@@ -57,6 +57,17 @@ defmodule MyAppWeb.Operations.FormTest do
       assert %Service{
                locations: [%Location{id: ^location_3_id}]
              } = Ash.load!(service, [:locations])
+
+      update_attrs = %{"location_ids" => []}
+
+      assert {:ok, %Service{} = service} =
+               AshPhoenix.Form.submit(phx_form, params: update_attrs)
+
+      assert [] = Ash.Query.filter(ServiceLocation, service_id == ^service.id) |> Ash.read!()
+
+      assert %Service{
+               locations: []
+             } = Ash.load!(service, [:locations])
     end
   end
 end
