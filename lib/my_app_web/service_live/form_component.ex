@@ -94,7 +94,9 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
   defp assign_form(%{assigns: %{service: service}} = socket) do
     form =
       if service do
-        AshPhoenix.Form.for_update(service, :update, as: "service")
+        service
+        |> Ash.load!([:locations])
+        |> AshPhoenix.Form.for_update(:update, as: "service")
       else
         AshPhoenix.Form.for_create(MyApp.Operations.Service, :create, as: "service")
       end
