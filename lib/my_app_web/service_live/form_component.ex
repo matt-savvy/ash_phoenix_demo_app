@@ -17,7 +17,6 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <input type="hidden" name={@form[:location_ids].name} value="" />
         <.input
           field={@form[:location_ids]}
           type="select"
@@ -44,6 +43,10 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
      |> assign_form()}
   end
 
+  defp prepare_params(params, :validate) do
+    Map.put_new(params, "location_ids", [])
+  end
+
   defp assign_locations(socket) do
     locations =
       MyApp.Operations.Location
@@ -53,24 +56,18 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
     |> assign(:locations, locations)
   end
 
-  defp preprocess_service_params(%{"location_ids" => ""} = params) do
-    Map.put(params, "location_ids", [])
-  end
-
-  defp preprocess_service_params(params), do: params
-
   @impl true
   def handle_event("validate", %{"service" => service_params}, socket) do
     {:noreply,
      assign(socket,
        form:
-         AshPhoenix.Form.validate(socket.assigns.form, preprocess_service_params(service_params))
+         AshPhoenix.Form.validate(socket.assigns.form, service_params)
      )}
   end
 
   def handle_event("save", %{"service" => service_params}, socket) do
     case AshPhoenix.Form.submit(socket.assigns.form,
-           params: preprocess_service_params(service_params)
+           params: service_params
          ) do
       {:ok, service} ->
         notify_parent({:saved, service})
@@ -94,7 +91,7 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
       if service do
         service
         |> Ash.load!([:locations, :location_ids])
-        |> AshPhoenix.Form.for_update(:update, as: "service")
+        |> AshPhoenix.Form.for_update(:update, as: "service", prepare_params: &prepare_params/2)
       else
         AshPhoenix.Form.for_create(MyApp.Operations.Service, :create, as: "service")
       end
