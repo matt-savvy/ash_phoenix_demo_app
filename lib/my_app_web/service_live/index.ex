@@ -92,6 +92,7 @@ defmodule MyAppWeb.ServiceLive.Index do
 
   @impl true
   def handle_info({MyAppWeb.ServiceLive.FormComponent, {:saved, service}}, socket) do
+    service = Ash.load!(service, [:locations, :location_ids, :location_names])
     {:noreply, stream_insert(socket, :services, service)}
   end
 
