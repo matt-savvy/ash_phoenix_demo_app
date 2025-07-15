@@ -19,7 +19,7 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
       >
         <.input
           field={@form[:location_ids]}
-          type="select"
+          type="checkgroup"
           multiple
           label="Locations"
           options={Enum.map(@locations, &{&1.name, &1.id})}
@@ -60,8 +60,7 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
   def handle_event("validate", %{"service" => service_params}, socket) do
     {:noreply,
      assign(socket,
-       form:
-         AshPhoenix.Form.validate(socket.assigns.form, service_params)
+       form: AshPhoenix.Form.validate(socket.assigns.form, service_params)
      )}
   end
 
@@ -91,9 +90,15 @@ defmodule MyAppWeb.ServiceLive.FormComponent do
       if service do
         service
         |> Ash.load!([:locations, :location_ids])
-        |> AshPhoenix.Form.for_update(:update, as: "service", prepare_params: &prepare_params/2)
+        |> AshPhoenix.Form.for_update(:update,
+          as: "service",
+          prepare_params: &prepare_params/2
+        )
       else
-        AshPhoenix.Form.for_create(MyApp.Operations.Service, :create, as: "service")
+        AshPhoenix.Form.for_create(MyApp.Operations.Service, :create,
+          as: "service",
+          prepare_params: &prepare_params/2
+        )
       end
 
     assign(socket, form: to_form(form))
